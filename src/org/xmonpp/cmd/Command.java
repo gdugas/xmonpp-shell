@@ -17,8 +17,8 @@ abstract public class Command extends Thread {
     protected OutputStream stdout;
     protected OutputStream stderr;
 
-    abstract boolean validate();
-    
+    public abstract boolean validate();
+
     public InputStream getStdin() {
         return this.stdin;
     }

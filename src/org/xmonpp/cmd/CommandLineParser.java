@@ -122,13 +122,13 @@ public class CommandLineParser {
         } else {
             commands.add(cmdline);
         }
-        
+
     }
-    
+
     public ArrayList<String> getCommands() {
         return this.commands;
     }
-    
+
     public InputStream getStdin() {
         return this.stdin;
     }
