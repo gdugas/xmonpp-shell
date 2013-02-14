@@ -4,8 +4,11 @@
  */
 package org.xmonpp.cmd;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -16,7 +19,19 @@ abstract public class Command extends Thread {
     protected InputStream stdin;
     protected OutputStream stdout;
     protected OutputStream stderr;
-
+    
+    @Override
+    final public void run () {
+        try {
+            this.exec();
+            this.getStdout().close();
+        } catch (IOException e) {
+            Logger.getLogger(Command.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+    
+    abstract public void exec();
+    
     public abstract boolean validate();
 
     public InputStream getStdin() {
