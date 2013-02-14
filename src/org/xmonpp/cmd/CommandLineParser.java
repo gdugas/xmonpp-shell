@@ -68,7 +68,7 @@ public class CommandLineParser {
                         Logger.error("cmdline parsing error: ".concat(e.getMessage()));
                     }
                 }
-                stdin = new ByteArrayInputStream(buffer.toByteArray());
+                this.stdin = new ByteArrayInputStream(buffer.toByteArray());
                 break;
             }
         }

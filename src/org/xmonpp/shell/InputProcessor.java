@@ -12,7 +12,9 @@ import org.xmonpp.io.Input;
 import org.xmonpp.io.Output;
 import org.xmonpp.logger.Logger;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.ArrayList;
@@ -57,10 +59,15 @@ public class InputProcessor extends Thread {
                 Class cls = loader.loadClass(classname);
                 Command runnable = (Command) cls.newInstance();
 
-                //Command runnable = (Command) Class.forName(cmdname).newInstance();
                 runnables[i] = runnable;
                 if (i == 0) {
-                    runnable.setStdin(this.parser.getStdin());
+                    InputStream in = this.parser.getStdin();
+                    if (in == null) {
+                        runnable.setStdin(new ByteArrayInputStream("".getBytes()));
+                    } else {
+                        runnable.setStdin(in);
+                    }
+                    
                     runnable.setStdout(new ByteArrayOutputStream());
                 } else {
                     PipedInputStream in = new PipedInputStream();
