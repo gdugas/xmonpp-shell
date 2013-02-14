@@ -31,15 +31,15 @@ public class InputProcessor extends Thread {
         this.daemon = daemon;
         this.input = input;
     }
-    
+
     /*
      * Receive and parse message, detect commands, load them and call process method
      */
     @Override
-    public void run () {
+    public void run() {
         this.parser = new CommandLineParser(input.getMessage().getBody());
         ArrayList<String> commands = this.parser.getCommands();
-        Command runnables [] = new Command[commands.size()];
+        Command runnables[] = new Command[commands.size()];
 
         // Scanning requested commands
         int i, size = commands.size();
@@ -48,15 +48,15 @@ public class InputProcessor extends Thread {
             String classname = (String) Settings.get("commands.".concat(cmdname));
             if (classname == null) {
                 this.commandUnavailable(cmdname);
-                break;
+                return;
             }
-            
+
             // Init command
             try {
                 ClassLoader loader = ClassLoader.getSystemClassLoader();
                 Class cls = loader.loadClass(classname);
                 Command runnable = (Command) cls.newInstance();
-                
+
                 //Command runnable = (Command) Class.forName(cmdname).newInstance();
                 runnables[i] = runnable;
                 if (i == 0) {
@@ -65,47 +65,47 @@ public class InputProcessor extends Thread {
                 } else {
                     PipedInputStream in = new PipedInputStream();
                     PipedOutputStream out = new PipedOutputStream();
-                    Command previous = runnables[i-1];
-                    
+                    Command previous = runnables[i - 1];
+
                     if (i == size - 1) {
                         runnable.setStdout(new ByteArrayOutputStream());
                     } else {
                         runnable.setStdout(new ByteArrayOutputStream());
                     }
-                    
+
                     in.connect(out);
                     previous.setStdout(out);
                     runnable.setStdin(in);
                 }
-            
-            // Init errors:
+
+                // Init errors:
             } catch (Exception e) {
-                Logger.error("Command `"+ cmdname +"` error: unable to load class "+classname);
+                Logger.error("Command `" + cmdname + "` error: unable to load class " + classname);
             }
         }
-        
+
         // Execute commands
         for (i = 0; i < runnables.length; i++) {
             Command runnable = runnables[i];
             runnable.start();
         }
-        
+
         Command last = runnables[runnables.length - 1];
-        
+
         try {
-            while(last.isAlive()) {}
+            while (last.isAlive()) {
+            }
             Output o = new Output(this.input.getChat(), last.getStdout().toString());
             o.send();
-        } catch(Exception e) {
+        } catch (Exception e) {
             String message = "Execution error: ".concat(e.getMessage());
-            
+
             Logger.error(message);
             Output o = new Output(this.input.getChat(), message);
         }
-        
+
     }
-    
-    
+
     public void commandUnavailable(String name) {
         String message = "Unavailable command:".concat(name);
         Logger.debug(message);
@@ -113,5 +113,4 @@ public class InputProcessor extends Thread {
         Output output = new Output(this.input.getChat(), message);
         output.send();
     }
-    
 }
