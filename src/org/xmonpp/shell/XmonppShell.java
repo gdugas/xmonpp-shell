@@ -4,10 +4,10 @@
  */
 package org.xmonpp.shell;
 
-import org.xmonpp.daemon.XmonPPDaemon;
+import org.xmonpp.Daemon;
 import org.xmonpp.io.Input;
 import org.xmonpp.io.InputListener;
-import org.xmonpp.logger.Logger;
+import org.xmonpp.Logger;
 import org.xmonpp.db.Manager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,9 +26,9 @@ public class XmonppShell {
         Init.cmdline(args);
 
         // Launching daemon
-        XmonPPDaemon daemon = new XmonPPDaemon();
+        Daemon daemon = new Daemon();
         if (!daemon.login()) {
-            Logger.error("Xmpp daemon login error - exiting program");
+            Logger.getLogger().severe("Xmpp daemon login error - exiting program");
             System.exit(1);
         }
 
@@ -41,7 +41,7 @@ public class XmonppShell {
             state.executeUpdate();
 
         } catch (Exception e) {
-            Logger.error("Process recording error: ".concat(e.getMessage()));
+            Logger.getLogger().severe("Process recording error: ".concat(e.getMessage()));
             System.exit(1);
         }
 
@@ -50,13 +50,13 @@ public class XmonppShell {
         daemon.addInputListener(new InputListener() {
 
             @Override
-            public void messageReceived(XmonPPDaemon daemon, Input input) {
+            public void messageReceived(Daemon daemon, Input input) {
                 InputProcessor processor = new InputProcessor(daemon, input);
                 processor.start();
             }
         });
-        
-        
+
+
         // Looping while daemon is logged
         while (true) {
         }

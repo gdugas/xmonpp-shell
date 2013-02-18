@@ -6,11 +6,11 @@ package org.xmonpp.shell;
 
 import org.xmonpp.cmd.Command;
 import org.xmonpp.cmd.CommandLineParser;
-import org.xmonpp.conf.Settings;
-import org.xmonpp.daemon.XmonPPDaemon;
+import org.xmonpp.Settings;
+import org.xmonpp.Daemon;
 import org.xmonpp.io.Input;
 import org.xmonpp.io.Output;
-import org.xmonpp.logger.Logger;
+import org.xmonpp.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,10 +26,11 @@ import java.util.ArrayList;
 public class InputProcessor extends Thread {
 
     private CommandLineParser parser;
-    private XmonPPDaemon daemon;
+    private Daemon daemon;
     private Input input;
+    protected Logger logger = Logger.getLogger();
 
-    public InputProcessor(XmonPPDaemon daemon, Input input) {
+    public InputProcessor(Daemon daemon, Input input) {
         this.daemon = daemon;
         this.input = input;
     }
@@ -67,7 +68,7 @@ public class InputProcessor extends Thread {
                     } else {
                         runnable.setStdin(in);
                     }
-                    
+
                     runnable.setStdout(new ByteArrayOutputStream());
                 } else {
                     PipedInputStream in = new PipedInputStream();
@@ -87,7 +88,7 @@ public class InputProcessor extends Thread {
 
                 // Init errors:
             } catch (Exception e) {
-                Logger.error("Command `" + cmdname + "` error: unable to load class " + classname);
+                logger.severe("Command `".concat(cmdname).concat("` error: unable to load class ").concat(classname));
             }
         }
 
@@ -107,7 +108,7 @@ public class InputProcessor extends Thread {
         } catch (Exception e) {
             String message = "Execution error: ".concat(e.getMessage());
 
-            Logger.error(message);
+            logger.severe(message);
             Output o = new Output(this.input.getChat(), message);
         }
 
@@ -115,7 +116,7 @@ public class InputProcessor extends Thread {
 
     public void commandUnavailable(String name) {
         String message = "Unavailable command:".concat(name);
-        Logger.debug(message);
+        logger.finest(message);
 
         Output output = new Output(this.input.getChat(), message);
         output.send();

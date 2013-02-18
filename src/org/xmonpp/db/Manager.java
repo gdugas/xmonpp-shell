@@ -8,8 +8,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.xmonpp.conf.Settings;
-import org.xmonpp.logger.Logger;
+import org.xmonpp.Settings;
+import org.xmonpp.Logger;
 
 /**
  *
@@ -18,6 +18,7 @@ import org.xmonpp.logger.Logger;
 public class Manager {
 
     static private Connection conn;
+    static protected Logger logger = Logger.getLogger();
 
     static public Connection createConnection(String driver, String url) {
         Connection dbconn = null;
@@ -25,14 +26,14 @@ public class Manager {
         try {
             Class.forName(driver);
         } catch (Exception e) {
-            Logger.error("Sql driver error (".concat(driver).concat(") : ").concat(e.getMessage()));
+            logger.severe("Sql driver error (".concat(driver).concat(") : ").concat(e.getMessage()));
         }
 
         try {
             dbconn = DriverManager.getConnection(url);
             return dbconn;
         } catch (SQLException e) {
-            Logger.error("Database connection error: ".concat(e.getMessage()));
+            logger.severe("Database connection error: ".concat(e.getMessage()));
         }
 
         return dbconn;

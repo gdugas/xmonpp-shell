@@ -9,7 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import org.xmonpp.logger.Logger;
+import org.xmonpp.Logger;
 
 /**
  *
@@ -65,7 +65,7 @@ public class CommandLineParser {
                     try {
                         buffer.write(line.getBytes());
                     } catch (Exception e) {
-                        Logger.error("cmdline parsing error: ".concat(e.getMessage()));
+                        Logger.getLogger().severe("cmdline parsing error: ".concat(e.getMessage()));
                     }
                 }
                 this.stdin = new ByteArrayInputStream(buffer.toByteArray());

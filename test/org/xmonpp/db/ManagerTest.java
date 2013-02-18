@@ -12,7 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.xmonpp.conf.Settings;
+import org.xmonpp.Settings;
 
 /**
  *
