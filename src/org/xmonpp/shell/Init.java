@@ -12,8 +12,9 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 
+import java.util.logging.Logger;
+
 import org.xmonpp.Settings;
-import org.xmonpp.Logger;
 
 /**
  *
@@ -36,7 +37,7 @@ public class Init {
         try {
             CommandLine cmd = parser.parse(opts, args);
             if (!Settings.load(cmd.getOptionValue("f"))) {
-                Logger.getLogger().severe("Unable to load settings file: ".concat(cmd.getOptionValue("f")));
+                Logger.getLogger("xmonpp").severe("Unable to load settings file: ".concat(cmd.getOptionValue("f")));
                 System.exit(1);
             }
 
@@ -48,7 +49,7 @@ public class Init {
             // Cmdline parameters error
         } catch (ParseException e) {
             HelpFormatter formatter = new HelpFormatter();
-            Logger.getLogger().severe(e.getMessage());
+            Logger.getLogger("xmonpp").severe(e.getMessage());
             formatter.printHelp("CLI", opts);
             System.exit(1);
         }

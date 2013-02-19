@@ -10,7 +10,7 @@ import org.xmonpp.Settings;
 import org.xmonpp.Daemon;
 import org.xmonpp.io.Input;
 import org.xmonpp.io.Output;
-import org.xmonpp.Logger;
+import org.xmonpp.Loader;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  *
@@ -28,7 +29,7 @@ public class InputProcessor extends Thread {
     private CommandLineParser parser;
     private Daemon daemon;
     private Input input;
-    protected Logger logger = Logger.getLogger();
+    protected Logger logger = Logger.getLogger("xmonpp");
 
     public InputProcessor(Daemon daemon, Input input) {
         this.daemon = daemon;
@@ -56,8 +57,7 @@ public class InputProcessor extends Thread {
 
             // Init command
             try {
-                ClassLoader loader = ClassLoader.getSystemClassLoader();
-                Class cls = loader.loadClass(classname);
+                Class cls = Loader.loadClass(classname);
                 Command runnable = (Command) cls.newInstance();
 
                 runnables[i] = runnable;

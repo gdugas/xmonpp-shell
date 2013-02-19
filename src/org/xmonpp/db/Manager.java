@@ -7,9 +7,10 @@ package org.xmonpp.db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import org.xmonpp.Settings;
-import org.xmonpp.Logger;
+
 
 /**
  *
@@ -18,7 +19,7 @@ import org.xmonpp.Logger;
 public class Manager {
 
     static private Connection conn;
-    static protected Logger logger = Logger.getLogger();
+    static protected final Logger logger = Logger.getLogger("xmonpp");
 
     static public Connection createConnection(String driver, String url) {
         Connection dbconn = null;

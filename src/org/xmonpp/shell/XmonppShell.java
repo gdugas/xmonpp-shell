@@ -5,13 +5,14 @@
 package org.xmonpp.shell;
 
 import org.xmonpp.Daemon;
+import org.xmonpp.Loader;
 import org.xmonpp.io.Input;
 import org.xmonpp.io.InputListener;
-import org.xmonpp.Logger;
 import org.xmonpp.db.Manager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Date;
+import java.util.logging.Logger;
 
 public class XmonppShell {
 
@@ -24,11 +25,15 @@ public class XmonppShell {
 
         // Parsing and validate cmdline, load config
         Init.cmdline(args);
-
+        
+        // Init loader
+        Loader.setUp();
+        
+        
         // Launching daemon
         Daemon daemon = new Daemon();
         if (!daemon.login()) {
-            Logger.getLogger().severe("Xmpp daemon login error - exiting program");
+            Logger.getLogger("xmonpp").severe("Xmpp daemon login error - exiting program");
             System.exit(1);
         }
 
@@ -41,7 +46,7 @@ public class XmonppShell {
             state.executeUpdate();
 
         } catch (Exception e) {
-            Logger.getLogger().severe("Process recording error: ".concat(e.getMessage()));
+            Logger.getLogger("xmonpp").severe("Process recording error: ".concat(e.getMessage()));
             System.exit(1);
         }
 
